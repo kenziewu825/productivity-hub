@@ -1,0 +1,3807 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#ea580c">
+  <meta name="description"
+    content="Kenzie Wu - Productivity Hub: Aplikasi produktivitas mobile all-in-one untuk manajemen tugas, timer fokus pomodoro, dan jurnal harian refleksi belajar.">
+  <title>Kenzie Wu - Productivity Hub</title>
+
+  <!-- PWA Configuration -->
+  <link rel="manifest" href="data:application/manifest+json;utf-8,%7B%22name%22%3A%22Kenzie%20Wu%20-%20Productivity%20Hub%22%2C%22short_name%22%3A%22Kenzie%20Wu%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23fffbeb%22%2C%22theme_color%22%3A%22%23ea580c%22%7D">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Kenzie Wu">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* =========================================
+       CSS VARIABLES & DESIGN SYSTEM (WARM SUNSET: KUNING, OREN, MERAH)
+       ========================================= */
+    :root {
+      --primary-dark: #b91c1c;       /* Deep Crimson Ruby */
+      --primary: #ea580c;            /* Vibrant Sunset Orange */
+      --primary-light: #f97316;      /* Warm Amber Orange */
+      --primary-tint: #fffbeb;       /* Soft Light Warm Cream Canvas */
+      --primary-surface: #fef3c7;    /* Warm Golden Yellow Pill/Badge */
+
+      --accent-yellow: #f59e0b;      /* Glowing Amber Gold */
+      --accent-red: #ef4444;         /* Neon Coral Red */
+      --accent: #f59e0b;
+
+      --danger: #ef4444;
+      --danger-light: #fee2e2;
+      --success: #10b981;
+      --success-light: #d1fae5;
+
+      --bg-desktop: #fff7ed;
+      --bg-mobile: #fffdfa;
+      --card-bg: #ffffff;
+
+      --text-main: #1c1917;          /* Ultra crisp warm slate */
+      --text-muted: #64748b;         /* Modern Slate 500 */
+      --text-subtle: #94a3b8;        /* Slate 400 */
+
+      --border-subtle: rgba(251, 146, 60, 0.22);
+      --border-focus: #ea580c;
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+      --radius-xl: 30px;
+      --radius-full: 9999px;
+
+      --shadow-sm: 0 2px 6px -1px rgba(234, 88, 12, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 10px 22px -4px rgba(234, 88, 12, 0.12), 0 3px 8px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 36px -6px rgba(234, 88, 12, 0.25), 0 6px 14px -3px rgba(220, 38, 38, 0.12);
+      --shadow-glow: 0 0 25px rgba(234, 88, 12, 0.45);
+      --shadow-bottom-bar: 0 -8px 30px rgba(194, 65, 12, 0.1);
+
+      --nav-height: 76px;
+      --transition-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-smooth: 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-bounce: 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Reset & Base Setup */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at 15% 20%, #ffedd5 0%, #fff7ed 60%, #fee2e2 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      overflow-x: hidden;
+    }
+
+    /* =========================================
+       SMARTPHONE SHELL & RESPONSIVE LAYOUT
+       ========================================= */
+    .app-viewport {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100vh;
+      background-color: var(--bg-mobile);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px -15px rgba(194, 65, 12, 0.25), 0 0 0 1px rgba(234, 88, 12, 0.08);
+      overflow: hidden;
+    }
+
+    @media (max-width: 430px) {
+      .app-viewport {
+        max-width: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
+        box-shadow: none;
+      }
+    }
+
+    /* Top App Header Banner (Vibrant Dynamic Sunset Aurora Gradient) */
+    .app-header {
+      background: linear-gradient(135deg, #ea580c 0%, #dc2626 50%, #f59e0b 100%);
+      color: #ffffff;
+      padding: 22px 20px 26px;
+      border-bottom-left-radius: var(--radius-xl);
+      border-bottom-right-radius: var(--radius-xl);
+      box-shadow: 0 14px 34px -4px rgba(234, 88, 12, 0.45);
+      position: relative;
+      z-index: 20;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    /* Decorative Header Shimmer Elements */
+    .app-header::before {
+      content: "";
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 70%);
+      pointer-events: none;
+    }
+
+    .app-header::after {
+      content: "";
+      position: absolute;
+      bottom: -30px;
+      left: 10%;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(254, 243, 199, 0.2) 0%, rgba(254, 243, 199, 0) 70%);
+      pointer-events: none;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-avatar {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.15) 100%);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      position: relative;
+      cursor: pointer;
+      transition: transform var(--transition-bounce), box-shadow var(--transition-fast);
+      overflow: visible;
+    }
+
+    .brand-avatar:hover {
+      transform: scale(1.08) rotate(3deg);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: calc(var(--radius-md) - 2px);
+      display: block;
+    }
+
+    .avatar-initials {
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .avatar-edit-icon {
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      width: 16px;
+      height: 16px;
+      background: #ea580c;
+      border: 1.5px solid #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      color: #ffffff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .status-dot {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 11px;
+      height: 11px;
+      background: #22c55e;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #22c55e;
+    }
+
+    .brand-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      line-height: 1.1;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .brand-sub {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #fef08a;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Language Switcher Pill */
+    .lang-toggle-btn {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: var(--radius-full);
+      padding: 4px 8px;
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all var(--transition-fast);
+    }
+
+    .lang-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .lang-toggle-btn:active {
+      transform: scale(0.95);
+    }
+
+    .lang-flag {
+      font-size: 0.85rem;
+      line-height: 1;
+    }
+
+    .header-badge {
+      font-size: 0.74rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.38);
+      color: #ffffff;
+      padding: 5px 10px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .header-badge:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .streak-flame {
+      animation: flamePulse 1.8s infinite ease-in-out;
+      display: inline-block;
+    }
+
+    @keyframes flamePulse {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.22) rotate(-5deg); }
+    }
+
+    .header-greeting {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      position: relative;
+      z-index: 2;
+    }
+
+    .greeting-text h1 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .greeting-date {
+      font-size: 0.82rem;
+      color: #fed7aa;
+      font-weight: 600;
+      margin-top: 3px;
+    }
+
+    .quick-stat-pill {
+      background: rgba(255, 255, 255, 0.22);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      text-align: right;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+      transition: transform var(--transition-bounce);
+    }
+
+    .quick-stat-pill:hover {
+      transform: translateY(-2px);
+    }
+
+    .quick-stat-num {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    .quick-stat-label {
+      font-size: 0.68rem;
+      color: #fef08a;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+    }
+
+    /* =========================================
+       SCROLLABLE CONTENT AREA & TAB PAGES
+       ========================================= */
+    .app-main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 16px calc(var(--nav-height) + 26px);
+      scroll-behavior: smooth;
+      position: relative;
+    }
+
+    .app-main::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .app-main::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .app-main::-webkit-scrollbar-thumb {
+      background: rgba(234, 88, 12, 0.25);
+      border-radius: 4px;
+    }
+
+    .tab-content {
+      display: none;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity var(--transition-smooth), transform var(--transition-smooth);
+    }
+
+    .tab-content.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+      animation: tabFadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes tabFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Common Card Styles */
+    .card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-subtle);
+      transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-fast);
+      position: relative;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: rgba(249, 115, 22, 0.35);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      letter-spacing: -0.01em;
+    }
+
+    /* =========================================
+       TAB 1: TUGAS (TASK MANAGER)
+       ========================================= */
+    /* Progress Summary Banner with Shimmer Glow */
+    .progress-banner {
+      background: linear-gradient(135deg, #fffbeb 0%, #ffedd5 45%, #fee2e2 100%);
+      border: 1.5px solid #fed7aa;
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 6px 18px rgba(234, 88, 12, 0.09);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-info {
+      flex: 1;
+    }
+
+    .progress-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+    }
+
+    .progress-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 10px;
+      background-color: #fef3c7;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      border: 1px solid rgba(251, 146, 60, 0.3);
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f59e0b 0%, #ea580c 50%, #dc2626 100%);
+      border-radius: var(--radius-full);
+      transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      width: 0%;
+      box-shadow: 0 0 10px rgba(234, 88, 12, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      animation: barShimmer 2s infinite;
+    }
+
+    @keyframes barShimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .progress-circle-stat {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3.5px solid #f97316;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 16px rgba(234, 88, 12, 0.25);
+      flex-shrink: 0;
+      transition: transform var(--transition-bounce);
+    }
+
+    .progress-circle-stat:hover {
+      transform: scale(1.08);
+    }
+
+    .circle-stat-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      line-height: 1;
+    }
+
+    .circle-stat-unit {
+      font-size: 0.58rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* Add Task Form */
+    .task-input-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .text-input {
+      flex: 1;
+      background: #fffdf7;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 13px 16px;
+      font-size: 0.92rem;
+      font-family: inherit;
+      color: var(--text-main);
+      transition: all var(--transition-fast);
+      outline: none;
+    }
+
+    .text-input:focus {
+      border-color: var(--border-focus);
+      background: #ffffff;
+      box-shadow: 0 0 0 3.5px rgba(234, 88, 12, 0.18);
+    }
+
+    .btn-add {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #dc2626 100%);
+      color: #ffffff;
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(234, 88, 12, 0.38);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .btn-add:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(234, 88, 12, 0.45);
+    }
+
+    .btn-add:active {
+      transform: scale(0.92);
+    }
+
+    .btn-add svg {
+      width: 24px;
+      height: 24px;
+      stroke: #ffffff;
+      stroke-width: 2.5;
+    }
+
+    /* Category & Priority Selectors */
+    .selector-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .selector-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tag-chip {
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      background: #fff7ed;
+      color: var(--text-muted);
+      border: 1.5px solid var(--border-subtle);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tag-chip:hover {
+      background: #ffedd5;
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+
+    .tag-chip.active {
+      background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+      color: var(--primary-dark);
+      border-color: #f59e0b;
+      box-shadow: 0 3px 8px rgba(245, 158, 11, 0.25);
+      font-weight: 800;
+    }
+
+    /* Filter Tabs for Tasks */
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .filter-btn {
+      flex: 1;
+      padding: 9px 12px;
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1px solid var(--border-subtle);
+      background: #ffedd5;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .filter-btn:hover {
+      color: var(--text-main);
+      background: #fed7aa;
+    }
+
+    .filter-btn.active {
+      background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 6px 14px rgba(234, 88, 12, 0.35);
+    }
+
+    /* Task Items List */
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .task-item {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-fast);
+      animation: itemSlideIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .task-item:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(249, 115, 22, 0.4);
+    }
+
+    @keyframes itemSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .task-item.completed {
+      background: #fdfbf7;
+      border-color: #e2e8f0;
+      opacity: 0.78;
+    }
+
+    .task-item.completed .task-text {
+      text-decoration: line-through;
+      color: var(--text-subtle);
+    }
+
+    /* Custom Checkbox */
+    .task-checkbox-wrapper {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .task-checkbox {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .custom-check {
+      position: absolute;
+      inset: 0;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-bounce);
+    }
+
+    .task-checkbox:checked+.custom-check {
+      background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+      border-color: #ea580c;
+      animation: checkPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes checkPop {
+      0% { transform: scale(0.6); }
+      50% { transform: scale(1.25); }
+      100% { transform: scale(1); }
+    }
+
+    .custom-check svg {
+      width: 15px;
+      height: 15px;
+      stroke: #ffffff;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: none;
+    }
+
+    .task-checkbox:checked+.custom-check svg {
+      display: block;
+    }
+
+    .task-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-text {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-main);
+      word-break: break-word;
+      line-height: 1.35;
+      transition: color var(--transition-fast);
+    }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 5px;
+    }
+
+    .task-pill {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: var(--radius-full);
+      text-transform: capitalize;
+    }
+
+    .pill-kerja { background: #e0e7ff; color: #4338ca; }
+    .pill-belajar { background: #fef3c7; color: #b45309; }
+    .pill-pribadi { background: #ecfdf5; color: #047857; }
+    .pill-mendesak { background: #fee2e2; color: #b91c1c; }
+
+    .btn-delete-task {
+      background: transparent;
+      border: none;
+      color: var(--text-subtle);
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .btn-delete-task:hover,
+    .btn-delete-task:active {
+      color: var(--danger);
+      background: var(--danger-light);
+      transform: scale(1.1);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 36px 16px;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background: #ffedd5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+    }
+
+    .empty-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .empty-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* =========================================
+       TAB 2: FOKUS (POMODORO & FOCUS TIMER)
+       ========================================= */
+    .timer-modes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #fff7ed;
+      padding: 6px;
+      border-radius: var(--radius-xl);
+      gap: 8px;
+      margin-bottom: 22px;
+      border: 1.5px solid var(--border-subtle);
+    }
+
+    .mode-btn {
+      padding: 11px 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius-md);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      line-height: 1.25;
+    }
+
+    .mode-btn .mode-icon {
+      font-size: 1.1rem;
+    }
+
+    .mode-btn.active {
+      background: #ffffff;
+      color: var(--primary-dark);
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.18), 0 1px 2px rgba(0, 0, 0, 0.05);
+      font-weight: 800;
+      transform: translateY(-1px);
+    }
+
+    /* Circular Timer Container */
+    .timer-display-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0 14px;
+      position: relative;
+    }
+
+    .timer-svg-wrap {
+      width: 250px;
+      height: 250px;
+      position: relative;
+      filter: drop-shadow(0 14px 30px rgba(234, 88, 12, 0.28));
+    }
+
+    .timer-svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+
+    .timer-bg-circle {
+      stroke: #fed7aa;
+      stroke-width: 12;
+      fill: none;
+      opacity: 0.55;
+    }
+
+    .timer-progress-circle {
+      stroke: url(#warmSunsetGradient);
+      stroke-width: 12;
+      fill: none;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.85s ease;
+    }
+
+    .timer-inner-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .timer-status-badge {
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary-dark);
+      background: var(--primary-surface);
+      padding: 5px 16px;
+      border-radius: var(--radius-full);
+      margin-bottom: 6px;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      box-shadow: 0 2px 8px rgba(234, 88, 12, 0.12);
+    }
+
+    .timer-clock {
+      font-size: 3.6rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text-main);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      margin: 3px 0;
+      text-shadow: 0 2px 12px rgba(120, 53, 15, 0.08);
+    }
+
+    .timer-session-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    /* Thumb-Friendly Timer Controls */
+    .timer-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      margin-top: 26px;
+      margin-bottom: 12px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .ctrl-action-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .ctrl-action-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .btn-secondary-action {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #fff7ed;
+      border: 1.5px solid var(--border-subtle);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      box-shadow: 0 3px 8px rgba(120, 53, 15, 0.08);
+    }
+
+    .btn-secondary-action:hover,
+    .btn-secondary-action:active {
+      background: #ffedd5;
+      color: var(--text-main);
+      transform: scale(0.94);
+    }
+
+    .btn-primary-action {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #dc2626 100%);
+      color: #ffffff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 12px 28px -4px rgba(234, 88, 12, 0.52), 0 0 0 5px rgba(251, 146, 60, 0.22);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .btn-primary-action.running {
+      animation: pulseGlow 2s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 12px 28px -4px rgba(234, 88, 12, 0.52), 0 0 0 5px rgba(251, 146, 60, 0.22);
+      }
+      50% {
+        box-shadow: 0 16px 36px -2px rgba(220, 38, 38, 0.7), 0 0 0 9px rgba(245, 158, 11, 0.35);
+      }
+    }
+
+    .btn-primary-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 34px -4px rgba(234, 88, 12, 0.6), 0 0 0 7px rgba(251, 146, 60, 0.28);
+    }
+
+    .btn-primary-action:active {
+      transform: scale(0.92);
+    }
+
+    .btn-primary-action svg {
+      width: 34px;
+      height: 34px;
+      fill: #ffffff;
+      stroke: #ffffff;
+    }
+
+    /* Ambient Audio & Stats in Focus */
+    .ambient-sound-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fffdf7;
+      border: 1.5px solid var(--border-subtle);
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      margin-top: 16px;
+      box-shadow: 0 3px 8px rgba(234, 88, 12, 0.05);
+    }
+
+    .ambient-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ambient-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--primary-surface);
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    .ambient-name {
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .ambient-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* Custom Toggle Switch */
+    .switch-wrap {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 26px;
+    }
+
+    .switch-wrap input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #fed7aa;
+      border-radius: var(--radius-full);
+      transition: var(--transition-fast);
+    }
+
+    .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: var(--transition-fast);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .switch-wrap input:checked+.switch-slider {
+      background: linear-gradient(90deg, #f59e0b, #ea580c);
+    }
+
+    .switch-wrap input:checked+.switch-slider:before {
+      transform: translateX(20px);
+    }
+
+    .focus-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .stat-mini-card {
+      background: #fffdf7;
+      border-radius: var(--radius-md);
+      padding: 14px;
+      border: 1.5px solid var(--border-subtle);
+      text-align: center;
+      transition: transform var(--transition-fast);
+    }
+
+    .stat-mini-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .stat-mini-val {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .stat-mini-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    /* =========================================
+       TAB 3: JURNAL (DAILY JOURNAL & REFLECTION)
+       ========================================= */
+    .journal-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .form-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-field-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .select-input {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ea580c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 15px;
+      padding-right: 32px;
+      cursor: pointer;
+    }
+
+    /* Mood / Understanding Selector */
+    .mood-selector-wrap {
+      margin-bottom: 16px;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .mood-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .mood-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 4px;
+      background: #fff7ed;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-bounce);
+    }
+
+    .mood-emoji {
+      font-size: 1.35rem;
+      line-height: 1;
+      transition: transform var(--transition-bounce);
+    }
+
+    .mood-text {
+      font-size: 0.66rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .mood-btn.active {
+      background: var(--primary-surface);
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 14px rgba(234, 88, 12, 0.22);
+    }
+
+    .mood-btn.active .mood-emoji {
+      transform: scale(1.2);
+    }
+
+    .mood-btn.active .mood-text {
+      color: var(--primary-dark);
+      font-weight: 800;
+    }
+
+    /* Journal Form Textarea */
+    .textarea-input {
+      width: 100%;
+      min-height: 105px;
+      background: #fffdf7;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 13px 16px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      color: var(--text-main);
+      resize: vertical;
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+      margin-bottom: 16px;
+      line-height: 1.45;
+    }
+
+    .textarea-input:focus {
+      border-color: var(--border-focus);
+      background: #ffffff;
+      box-shadow: 0 0 0 3.5px rgba(234, 88, 12, 0.18);
+    }
+
+    .btn-submit-journal {
+      width: 100%;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #dc2626 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 0.94rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      box-shadow: 0 8px 20px rgba(234, 88, 12, 0.38);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .btn-submit-journal:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(234, 88, 12, 0.48);
+    }
+
+    .btn-submit-journal:active {
+      transform: scale(0.97);
+    }
+
+    /* Journal Feed & Subject Badges */
+    .journal-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .journal-entry-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      animation: itemSlideIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-fast);
+      position: relative;
+    }
+
+    .journal-entry-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(249, 115, 22, 0.35);
+    }
+
+    .journal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .journal-badge-group {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex-wrap: wrap;
+    }
+
+    .subject-pill {
+      font-size: 0.74rem;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .subject-matematika { background: #dbeafe; color: #1e40af; }
+    .subject-indonesia { background: #ffe4e6; color: #9f1239; }
+    .subject-inggris { background: #e0f2fe; color: #0369a1; }
+    .subject-fisika { background: #f3e8ff; color: #6b21a8; }
+    .subject-kimia { background: #fef3c7; color: #92400e; }
+    .subject-biologi { background: #d1fae5; color: #065f46; }
+    .subject-sejarah { background: #ffedd5; color: #9a3412; }
+    .subject-informatika { background: #cffafe; color: #0e7490; }
+    .subject-lainnya { background: #ffedd5; color: #9a3412; }
+
+    .journal-date-text {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .journal-entry-body {
+      font-size: 0.88rem;
+      color: var(--text-main);
+      line-height: 1.5;
+      white-space: pre-line;
+      word-break: break-word;
+      background: #fffdf7;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      border-left: 3.5px solid var(--primary);
+      margin: 10px 0;
+    }
+
+    .journal-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-subtle);
+    }
+
+    .journal-understanding-tag {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-delete-journal {
+      background: transparent;
+      border: none;
+      color: var(--text-subtle);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-delete-journal:hover,
+    .btn-delete-journal:active {
+      color: var(--danger);
+      background: var(--danger-light);
+      transform: scale(1.1);
+    }
+
+    /* =========================================
+       FIXED BOTTOM NAVIGATION BAR (FLOATING DOCK)
+       ========================================= */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-height);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(251, 146, 60, 0.25);
+      box-shadow: var(--shadow-bottom-bar);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 12px;
+      z-index: 50;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: transparent;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 8px 6px;
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+      position: relative;
+    }
+
+    .nav-item:active {
+      transform: scale(0.92);
+    }
+
+    .nav-icon-wrap {
+      width: 44px;
+      height: 30px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-bounce);
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      transition: all var(--transition-fast);
+    }
+
+    .nav-label {
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      transition: all var(--transition-fast);
+    }
+
+    /* Active Tab State */
+    .nav-item.active {
+      color: var(--primary-dark);
+    }
+
+    .nav-item.active .nav-icon-wrap {
+      background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(234, 88, 12, 0.2);
+    }
+
+    .nav-item.active svg {
+      stroke: var(--primary-dark);
+      stroke-width: 2.5;
+    }
+
+    .nav-item.active .nav-label {
+      color: var(--primary-dark);
+      font-weight: 800;
+    }
+
+    /* Active Dot */
+    .nav-item.active::after {
+      content: "";
+      position: absolute;
+      bottom: 4px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--primary-dark);
+      box-shadow: 0 0 6px var(--primary);
+    }
+
+    /* =========================================
+       TOAST NOTIFICATION COMPONENT
+       ========================================= */
+    .toast-container {
+      position: absolute;
+      top: 18px;
+      left: 16px;
+      right: 16px;
+      z-index: 100;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toast {
+      pointer-events: auto;
+      background: #1c1917;
+      color: #ffffff;
+      padding: 11px 20px;
+      border-radius: var(--radius-full);
+      font-size: 0.84rem;
+      font-weight: 700;
+      box-shadow: 0 12px 28px rgba(120, 53, 15, 0.35);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      opacity: 0;
+      transform: translateY(-18px) scale(0.95);
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .toast-success {
+      background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    /* =========================================
+       MODAL AJAKAN REFLEKSI BELAJAR
+       ========================================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(28, 25, 23, 0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .reflection-modal {
+      background: #ffffff;
+      width: 100%;
+      max-width: 360px;
+      border-radius: var(--radius-xl);
+      padding: 28px 24px 24px;
+      text-align: center;
+      box-shadow: 0 25px 55px -10px rgba(194, 65, 12, 0.42), 0 0 0 1.5px rgba(249, 115, 22, 0.25);
+      transform: scale(0.85) translateY(24px);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-overlay.active .reflection-modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-celebrate-badge {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fee2e2 100%);
+      border: 3.5px solid #ffffff;
+      box-shadow: 0 10px 26px rgba(234, 88, 12, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.6rem;
+      animation: modalBadgeBounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes modalBadgeBounce {
+      0% { transform: scale(0.2) rotate(-20deg); }
+      60% { transform: scale(1.2) rotate(10deg); }
+      80% { transform: scale(0.95) rotate(-5deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .reflection-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .reflection-subtitle {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .reflection-highlight-box {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 1.5px dashed #f59e0b;
+      border-radius: var(--radius-md);
+      padding: 13px 15px;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+    }
+
+    .highlight-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+
+    .highlight-text {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      line-height: 1.35;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-modal-primary {
+      width: 100%;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #dc2626 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 0.94rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 8px 22px rgba(234, 88, 12, 0.42);
+      transition: all var(--transition-fast);
+    }
+
+    .btn-modal-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(234, 88, 12, 0.52);
+    }
+
+    .btn-modal-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-modal-secondary {
+      width: 100%;
+      padding: 12px 16px;
+      background: transparent;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-modal-secondary:hover,
+    .btn-modal-secondary:active {
+      background: #fff7ed;
+      color: var(--text-main);
+    }
+
+    /* =========================================
+       MODAL GANTI FOTO PROFIL
+       ========================================= */
+    .profile-modal-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin: 16px 0 20px;
+    }
+
+    .profile-preview-wrap {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fee2e2 100%);
+      border: 3.5px solid #ea580c;
+      box-shadow: 0 8px 24px rgba(234, 88, 12, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .profile-preview-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .upload-btn-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .custom-file-upload {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 16px;
+      background: #fff7ed;
+      border: 1.5px dashed var(--primary);
+      border-radius: var(--radius-md);
+      color: var(--primary-dark);
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .custom-file-upload:hover {
+      background: #ffedd5;
+      transform: translateY(-1px);
+    }
+
+    .custom-file-upload input[type="file"] {
+      display: none;
+    }
+
+    .presets-title {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 4px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .avatar-presets-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      width: 100%;
+    }
+
+    .preset-avatar-btn {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      background: #fffdf7;
+      border: 1.5px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: all var(--transition-bounce);
+    }
+
+    .preset-avatar-btn:hover {
+      transform: scale(1.15);
+      border-color: var(--primary);
+      background: #fff7ed;
+      box-shadow: 0 4px 10px rgba(234, 88, 12, 0.2);
+    }
+
+    .btn-reset-avatar {
+      font-size: 0.78rem;
+      color: var(--danger);
+      background: transparent;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 6px;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-reset-avatar:hover {
+      text-decoration: underline;
+    }
+
+    /* Confetti Canvas Container */
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 300;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Single Container for Desktop Centering & 100% Mobile View -->
+  <div class="app-viewport">
+
+    <!-- Toast Feedback System -->
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <!-- Header Banner -->
+    <header class="app-header">
+      <div class="header-top">
+        <div class="brand-group">
+          <div class="brand-avatar" id="btnOpenProfileModal" title="Klik untuk Ganti Foto Profil / Change Photo">
+            <span class="avatar-initials" id="avatarInitialsText">KW</span>
+            <img id="avatarImgDisplay" class="avatar-img" style="display: none;" alt="Kenzie Wu">
+            <div class="avatar-edit-icon" title="Edit Foto">✏️</div>
+            <div class="status-dot"></div>
+          </div>
+          <div>
+            <div class="brand-title">Kenzie Wu</div>
+            <div class="brand-sub" id="brandSubText">Productivity Hub ✨</div>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <!-- Language Toggle Switcher -->
+          <button type="button" class="lang-toggle-btn" id="btnToggleLanguage" title="Ganti Bahasa / Switch Language">
+            <span class="lang-flag" id="langFlagIcon">🇬🇧</span>
+            <span id="langLabelText">EN</span>
+          </button>
+
+          <div class="header-badge" id="streakBadge" title="Streak Fokus Harian">
+            <span class="streak-flame">🔥</span> <span id="streakBadgeText">5 Hari Rutin</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-greeting">
+        <div class="greeting-text">
+          <h1 id="greetingTitle">Semangat Pagi, Kenzie Wu! ✨</h1>
+          <div class="greeting-date" id="currentDateText">Selasa, 29 September 2026</div>
+        </div>
+        <div class="quick-stat-pill">
+          <div class="quick-stat-num" id="tasksRemainingBadge">0</div>
+          <div class="quick-stat-label">Tugas Sisa</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Scrollable Content Container -->
+    <main class="app-main">
+
+      <!-- =======================================
+           TAB 1: TUGAS (TASK MANAGER)
+           ======================================= -->
+      <section id="tab-tugas" class="tab-content active" role="tabpanel">
+
+        <!-- Progress Summary Banner -->
+        <div class="progress-banner">
+          <div class="progress-info">
+            <div class="progress-title" id="progressSummaryTitle">Progres Tugas Hari Ini</div>
+            <div class="progress-subtitle" id="progressDetailText">0 dari 0 tugas selesai</div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="taskProgressBar"></div>
+            </div>
+          </div>
+          <div class="progress-circle-stat">
+            <span class="circle-stat-val" id="progressPercentText">0%</span>
+            <span class="circle-stat-unit">Selesai</span>
+          </div>
+        </div>
+
+        <!-- Add Task Card -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Tambah Tugas
+            </span>
+          </div>
+          <form class="task-input-form" id="addTaskForm">
+            <div class="input-row">
+              <input type="text" id="taskInput" class="text-input" placeholder="Tulis rencana atau tugas baru..."
+                autocomplete="off" required>
+              <button type="submit" class="btn-add" title="Tambah Tugas">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12h14m-7-7v14" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Category Chips -->
+            <div class="selector-row" id="categoryChips">
+              <button type="button" class="tag-chip active" data-category="kerja">💼 Kerja</button>
+              <button type="button" class="tag-chip" data-category="belajar">📚 Belajar</button>
+              <button type="button" class="tag-chip" data-category="pribadi">🧘 Pribadi</button>
+              <button type="button" class="tag-chip" data-category="mendesak">⚡ Mendesak</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-tabs">
+          <button type="button" class="filter-btn active" data-filter="all">Semua (<span
+              id="countAll">0</span>)</button>
+          <button type="button" class="filter-btn" data-filter="active">Aktif (<span id="countActive">0</span>)</button>
+          <button type="button" class="filter-btn" data-filter="completed">Selesai (<span
+              id="countCompleted">0</span>)</button>
+        </div>
+
+        <!-- Task Items List -->
+        <div class="task-list" id="taskListContainer">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Empty State (Shown when no tasks match) -->
+        <div class="empty-state" id="emptyTasksState" style="display: none;">
+          <div class="empty-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 11 12 14 22 4"></polyline>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+          </div>
+          <div class="empty-title">Tidak ada tugas ditemukan</div>
+          <div class="empty-desc">Tambahkan rencana baru di atas untuk mulai produktif!</div>
+        </div>
+
+      </section>
+
+      <!-- =======================================
+           TAB 2: FOKUS (POMODORO & FOCUS TIMER)
+           ======================================= -->
+      <section id="tab-fokus" class="tab-content" role="tabpanel">
+
+        <div class="card">
+          <!-- Timer Modes: Pilihan Mode Sesi -->
+          <div class="timer-modes" id="timerModes" role="group" aria-label="Pilihan Mode Sesi">
+            <button type="button" class="mode-btn active" data-time="25" data-mode="pomodoro" id="modeFocus25">
+              <span class="mode-icon">🎯</span>
+              <span>Fokus Belajar 25 Menit</span>
+            </button>
+            <button type="button" class="mode-btn" data-time="5" data-mode="shortBreak" id="modeBreak5">
+              <span class="mode-icon">☕</span>
+              <span>Istirahat Santai 5 Menit</span>
+            </button>
+          </div>
+
+          <!-- Circular Clock Graphic -->
+          <div class="timer-display-box">
+            <div class="timer-svg-wrap">
+              <svg class="timer-svg" viewBox="0 0 220 220">
+                <defs>
+                  <linearGradient id="tealGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#2dd4bf" />
+                    <stop offset="100%" stop-color="#0f766e" />
+                  </linearGradient>
+                </defs>
+                <circle class="timer-bg-circle" cx="110" cy="110" r="95"></circle>
+                <circle class="timer-progress-circle" id="timerProgressCircle" cx="110" cy="110" r="95"
+                  stroke-dasharray="596.9" stroke-dashoffset="0"></circle>
+              </svg>
+
+              <div class="timer-inner-content">
+                <span class="timer-status-badge" id="timerStatusBadge">Fokus Belajar</span>
+                <span class="timer-clock" id="timerClockDisplay">25:00</span>
+                <span class="timer-session-label" id="timerCycleLabel">Fokus Mendalam</span>
+              </div>
+            </div>
+
+            <!-- Tombol Kontrol Ramah Jempol -->
+            <div class="timer-controls">
+              <!-- Tombol Atur Ulang (Reset) -->
+              <div class="ctrl-action-item">
+                <button type="button" class="btn-secondary-action" id="btnResetTimer" title="Atur Ulang Timer" aria-label="Atur Ulang">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                  </svg>
+                </button>
+                <span class="ctrl-action-label">Reset</span>
+              </div>
+
+              <!-- Tombol Mulai / Jeda Utama -->
+              <div class="ctrl-action-item">
+                <button type="button" class="btn-primary-action" id="btnToggleTimer" title="Mulai / Jeda Sesi" aria-label="Mulai Timer">
+                  <svg id="playPauseIcon" viewBox="0 0 24 24">
+                    <polygon points="6 4 18 12 6 20 6 4"></polygon>
+                  </svg>
+                </button>
+                <span class="ctrl-action-label" id="toggleButtonLabel">Mulai</span>
+              </div>
+
+              <!-- Tombol Lewati / Skip Sesi -->
+              <div class="ctrl-action-item">
+                <button type="button" class="btn-secondary-action" id="btnSkipTimer" title="Lewati Sesi" aria-label="Lewati Sesi">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                    <line x1="19" y1="5" x2="19" y2="19"></line>
+                  </svg>
+                </button>
+                <span class="ctrl-action-label">Lewati</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ambient Audio Feature -->
+          <div class="ambient-sound-card">
+            <div class="ambient-info">
+              <div class="ambient-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18V5l12-2v13"></path>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+              </div>
+              <div>
+                <div class="ambient-name">Derau Relaksasi Alami</div>
+                <div class="ambient-desc">Audio sintetis fokus tanpa jeda</div>
+              </div>
+            </div>
+            <label class="switch-wrap" title="Aktifkan Bunyi Fokus">
+              <input type="checkbox" id="ambientToggle">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <!-- Stats Mini Grid -->
+          <div class="focus-stats-grid">
+            <div class="stat-mini-card">
+              <div class="stat-mini-val" id="sessionsCompletedCount">4</div>
+              <div class="stat-mini-label">Sesi Selesai</div>
+            </div>
+            <div class="stat-mini-card">
+              <div class="stat-mini-val" id="totalFocusMinutes">100</div>
+              <div class="stat-mini-label">Menit Terfokus</div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =======================================
+           TAB 3: JURNAL (DAILY JOURNAL & REFLECTION)
+           ======================================= -->
+      <section id="tab-jurnal" class="tab-content" role="tabpanel">
+
+        <!-- Formulir Catatan Refleksi Belajar -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              Catatan Refleksi Belajar
+            </span>
+          </div>
+
+          <form id="journalForm">
+            <!-- 2-Column Grid: Tanggal Hari Ini (Otomatis) & Mata Pelajaran -->
+            <div class="journal-form-grid">
+              <div class="form-field-group">
+                <label for="journalDateInput" class="form-field-label">📅 Tanggal Belajar</label>
+                <input type="date" id="journalDateInput" class="text-input" required>
+              </div>
+
+              <div class="form-field-group">
+                <label for="journalSubjectSelect" class="form-field-label">📚 Mata Pelajaran</label>
+                <select id="journalSubjectSelect" class="text-input select-input" required>
+                  <option value="" disabled selected>Pilih Mapel...</option>
+                  <option value="matematika">📐 Matematika</option>
+                  <option value="indonesia">📖 B. Indonesia</option>
+                  <option value="inggris">🌍 B. Inggris</option>
+                  <option value="fisika">⚡ Fisika</option>
+                  <option value="kimia">🧪 Kimia</option>
+                  <option value="biologi">🧬 Biologi</option>
+                  <option value="sejarah">🏛️ Sejarah & IPS</option>
+                  <option value="informatika">💻 Informatika / TIK</option>
+                  <option value="lainnya">📝 Mapel Lainnya</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Pemilih Tingkat Pemahaman & Mood -->
+            <div class="mood-selector-wrap">
+              <span class="section-label">Tingkat Pemahaman Materi</span>
+              <div class="mood-buttons" id="moodButtonsGroup">
+                <button type="button" class="mood-btn active" data-mood="Paham Penuh" data-emoji="🤩">
+                  <span class="mood-emoji">🤩</span>
+                  <span class="mood-text">Paham Penuh</span>
+                </button>
+                <button type="button" class="mood-btn" data-mood="Cukup Paham" data-emoji="😊">
+                  <span class="mood-emoji">😊</span>
+                  <span class="mood-text">Cukup Paham</span>
+                </button>
+                <button type="button" class="mood-btn" data-mood="Butuh Latihan" data-emoji="💡">
+                  <span class="mood-emoji">💡</span>
+                  <span class="mood-text">Butuh Latihan</span>
+                </button>
+                <button type="button" class="mood-btn" data-mood="Masih Bingung" data-emoji="🤔">
+                  <span class="mood-emoji">🤔</span>
+                  <span class="mood-text">Masih Bingung</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Kolom Teks Catatan Refleksi Pemahaman Materi -->
+            <div class="form-field-group" style="margin-bottom: 4px;">
+              <label for="journalNotesInput" class="form-field-label">📝 Catatan Refleksi & Pemahaman Materi</label>
+              <textarea id="journalNotesInput" class="textarea-input"
+                placeholder="Tuliskan ringkasan pemahamanmu, rumus atau konsep penting yang dipelajari, serta bagian yang perlu diulang kembali..." required></textarea>
+            </div>
+
+            <!-- Tombol Simpan Catatan Refleksi -->
+            <button type="submit" class="btn-submit-journal" id="btnSubmitJournal">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+              Simpan Catatan Refleksi
+            </button>
+          </form>
+        </div>
+
+        <!-- Riwayat Catatan Refleksi -->
+        <div style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <span
+            style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;">Riwayat Refleksi Siswa</span>
+          <span style="font-size: 0.75rem; color: var(--primary-dark); font-weight: 800; background: var(--primary-surface); padding: 2px 10px; border-radius: var(--radius-full);" id="journalCountBadge">0 Catatan</span>
+        </div>
+
+        <div class="journal-list" id="journalListContainer">
+          <!-- Dinamis diisi dari JavaScript & LocalStorage -->
+        </div>
+
+        <!-- Empty State for Journal -->
+        <div class="empty-state" id="emptyJournalState" style="display: none;">
+          <div class="empty-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+          </div>
+          <div class="empty-title">Belum ada catatan refleksi</div>
+          <div class="empty-desc">Tuliskan evaluasi pemahaman materimu setelah belajar di formulir atas!</div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- =========================================
+         MENU NAVIGASI BAWAH (FIXED BOTTOM BAR)
+         ========================================= -->
+    <nav class="bottom-nav" aria-label="Menu Navigasi Utama">
+      <!-- Tab 1: Tugas (Ikon Check-Square) -->
+      <button type="button" class="nav-item active" data-target="tab-tugas" id="navBtnTugas" aria-label="Tab Tugas">
+        <div class="nav-icon-wrap">
+          <svg viewBox="0 0 24 24">
+            <polyline points="9 11 12 14 22 4"></polyline>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+        </div>
+        <span class="nav-label">Tugas</span>
+      </button>
+
+      <!-- Tab 2: Fokus (Ikon Timer) -->
+      <button type="button" class="nav-item" data-target="tab-fokus" id="navBtnFokus" aria-label="Tab Fokus">
+        <div class="nav-icon-wrap">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <span class="nav-label">Fokus</span>
+      </button>
+
+      <!-- Tab 3: Jurnal (Ikon Catatan Buku) -->
+      <button type="button" class="nav-item" data-target="tab-jurnal" id="navBtnJurnal" aria-label="Tab Jurnal">
+        <div class="nav-icon-wrap">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            <line x1="9" y1="7" x2="15" y2="7"></line>
+            <line x1="9" y1="11" x2="15" y2="11"></line>
+          </svg>
+        </div>
+        <span class="nav-label">Jurnal</span>
+      </button>
+    </nav>
+
+    <!-- =========================================
+         MODAL AJAKAN REFLEKSI BELAJAR
+         ========================================= -->
+    <div id="reflectionModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalReflectionTitle">
+      <div class="reflection-modal">
+        <div class="modal-celebrate-badge">🎉</div>
+        <h2 id="modalReflectionTitle" class="reflection-title">Sesi Fokus Tuntas!</h2>
+        <p class="reflection-subtitle">
+          Kerja luar biasa! Kamu baru saja menyelesaikan 25 menit sesi fokus belajar dengan konsentrasi penuh.
+        </p>
+
+        <div class="reflection-highlight-box">
+          <span class="highlight-icon">💡</span>
+          <div class="highlight-text">
+            Mencatat refleksi singkat membantu mengingat materi belajar 50% lebih kuat & tahan lama!
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-modal-primary" id="btnGoToJournal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Tulis Evaluasi di Jurnal 📝
+          </button>
+          <button type="button" class="btn-modal-secondary" id="btnStartBreakAfterFocus">
+            Mulai Istirahat Santai 5 Menit ☕
+          </button>
+        </div>
+    <!-- =========================================
+         MODAL GANTI FOTO PROFIL KENZIE WU
+         ========================================= -->
+    <div id="profilePhotoModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+      <div class="reflection-modal">
+        <h2 id="profileModalTitle" class="reflection-title">Foto Profil Kenzie Wu</h2>
+        <p class="reflection-subtitle" id="profileModalDesc">
+          Pilih foto profil dari perangkatmu atau gunakan avatar siap pakai!
+        </p>
+
+        <div class="profile-modal-body">
+          <div class="profile-preview-wrap" id="profileModalPreview">
+            <span id="modalPreviewInitials">KW</span>
+            <img id="modalPreviewImg" style="display: none;" alt="Preview">
+          </div>
+
+          <div class="upload-btn-wrap">
+            <label class="custom-file-upload">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <span id="uploadPhotoBtnText">Unggah Foto Sendiri</span>
+              <input type="file" id="profilePhotoFileInput" accept="image/*">
+            </label>
+
+            <div class="presets-title" id="presetsTitleText">Atau Pilih Avatar Keren:</div>
+            <div class="avatar-presets-grid" id="avatarPresetsGrid">
+              <button type="button" class="preset-avatar-btn" data-preset="🚀" title="Astronaut">🚀</button>
+              <button type="button" class="preset-avatar-btn" data-preset="⚡" title="Lightning">⚡</button>
+              <button type="button" class="preset-avatar-btn" data-preset="🎧" title="Gamer">🎧</button>
+              <button type="button" class="preset-avatar-btn" data-preset="🧑‍💻" title="Coder">🧑‍💻</button>
+              <button type="button" class="preset-avatar-btn" data-preset="🐯" title="Tiger">🐯</button>
+              <button type="button" class="preset-avatar-btn" data-preset="👑" title="King">👑</button>
+            </div>
+
+            <div style="display: flex; justify-content: center; margin-top: 6px;">
+              <button type="button" class="btn-reset-avatar" id="btnResetAvatar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                <span id="resetAvatarText">Hapus Foto & Gunakan Inisial KW</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-modal-primary" id="btnCloseProfileModal">
+            Simpan & Tutup ✅
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confetti Canvas Particle Effect -->
+    <canvas id="confettiCanvas"></canvas>
+
+  </div>
+
+  <!-- =========================================
+       LOGIKA JAVASCRIPT MURNI (VANILLA JS)
+       ========================================= -->
+  <script>
+    /* =========================================
+       1. GLOBAL UTILITIES & NOTIFICATIONS
+       ========================================= */
+    const toastContainer = document.getElementById('toastContainer');
+
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type === 'success' ? 'toast-success' : ''}`;
+      toast.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span>${message}</span>
+      `;
+      toastContainer.appendChild(toast);
+
+      // Animate entry
+      requestAnimationFrame(() => {
+        toast.classList.add('show');
+      });
+
+      // Auto remove after 2.8s
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 250);
+      }, 2800);
+    }
+
+    /* Confetti Particle Animation */
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = ['#ea580c', '#f59e0b', '#ef4444', '#10b981', '#3b82f6', '#ec4899', '#fef08a'];
+      const particles = [];
+      const count = 70;
+
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: canvas.width / 2 + (Math.random() - 0.5) * 120,
+          y: canvas.height * 0.35 + (Math.random() - 0.5) * 60,
+          vx: (Math.random() - 0.5) * 14,
+          vy: Math.random() * -12 - 3,
+          size: Math.random() * 8 + 5,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 10,
+          opacity: 1,
+          gravity: 0.36
+        });
+      }
+
+      let animId;
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let activeParticles = 0;
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.rotation += p.rotSpeed;
+          p.opacity -= 0.013;
+
+          if (p.opacity > 0 && p.y < canvas.height + 20) {
+            activeParticles++;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+            ctx.restore();
+          }
+        });
+
+        if (activeParticles > 0) {
+          animId = requestAnimationFrame(render);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(animId);
+        }
+      }
+      render();
+    }
+
+    // Audio Synthesis for Feedback (Web Audio API)
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playBeep(freq = 600, duration = 0.12, type = 'sine') {
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {
+        console.warn('Audio feedback blocked or not supported');
+      }
+    }
+
+    function playSuccessChime() {
+      try {
+        playBeep(523.25, 0.1, 'sine'); // C5
+        setTimeout(() => playBeep(659.25, 0.1, 'sine'), 100); // E5
+        setTimeout(() => playBeep(783.99, 0.25, 'sine'), 200); // G5
+      } catch (e) { }
+    }
+
+    /* =========================================
+       2. SISTEM FOTO PROFIL KENZIE WU
+       ========================================= */
+    const profileModal = document.getElementById('profilePhotoModal');
+    const btnOpenProfileModal = document.getElementById('btnOpenProfileModal');
+    const btnCloseProfileModal = document.getElementById('btnCloseProfileModal');
+    const profilePhotoFileInput = document.getElementById('profilePhotoFileInput');
+    const btnResetAvatar = document.getElementById('btnResetAvatar');
+    const avatarPresetsGrid = document.getElementById('avatarPresetsGrid');
+
+    const avatarImgDisplay = document.getElementById('avatarImgDisplay');
+    const avatarInitialsText = document.getElementById('avatarInitialsText');
+    const modalPreviewImg = document.getElementById('modalPreviewImg');
+    const modalPreviewInitials = document.getElementById('modalPreviewInitials');
+
+    function loadProfilePhoto() {
+      const savedPhoto = localStorage.getItem('kenzie_profile_photo');
+      if (savedPhoto) {
+        if (savedPhoto.startsWith('data:image') || savedPhoto.startsWith('http')) {
+          // Image format
+          avatarImgDisplay.src = savedPhoto;
+          avatarImgDisplay.style.display = 'block';
+          avatarInitialsText.style.display = 'none';
+
+          modalPreviewImg.src = savedPhoto;
+          modalPreviewImg.style.display = 'block';
+          modalPreviewInitials.style.display = 'none';
+        } else {
+          // Emoji/character preset
+          avatarImgDisplay.style.display = 'none';
+          avatarInitialsText.style.display = 'block';
+          avatarInitialsText.textContent = savedPhoto;
+
+          modalPreviewImg.style.display = 'none';
+          modalPreviewInitials.style.display = 'block';
+          modalPreviewInitials.textContent = savedPhoto;
+        }
+      } else {
+        // Default Initials "KW"
+        avatarImgDisplay.style.display = 'none';
+        avatarInitialsText.style.display = 'block';
+        avatarInitialsText.textContent = 'KW';
+
+        modalPreviewImg.style.display = 'none';
+        modalPreviewInitials.style.display = 'block';
+        modalPreviewInitials.textContent = 'KW';
+      }
+    }
+
+    if (btnOpenProfileModal) {
+      btnOpenProfileModal.addEventListener('click', () => {
+        playBeep(700, 0.05);
+        if (profileModal) profileModal.classList.add('active');
+      });
+    }
+
+    if (btnCloseProfileModal) {
+      btnCloseProfileModal.addEventListener('click', () => {
+        playBeep(500, 0.05);
+        if (profileModal) profileModal.classList.remove('active');
+        showToast(currentLang === 'en' ? 'Profile updated! 🌟' : 'Foto profil disimpan! 🌟');
+      });
+    }
+
+    if (profileModal) {
+      profileModal.addEventListener('click', (e) => {
+        if (e.target === profileModal) {
+          profileModal.classList.remove('active');
+        }
+      });
+    }
+
+    // File input handler (convert image to Base64)
+    if (profilePhotoFileInput) {
+      profilePhotoFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          if (file.size > 2.5 * 1024 * 1024) {
+            showToast(currentLang === 'en' ? 'Max file size is 2.5MB' : 'Ukuran foto maksimal 2.5MB', 'danger');
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const dataUrl = event.target.result;
+            localStorage.setItem('kenzie_profile_photo', dataUrl);
+            loadProfilePhoto();
+            triggerConfetti();
+            playSuccessChime();
+            showToast(currentLang === 'en' ? 'Photo updated! ✨' : 'Foto profil berhasil diunggah! ✨');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // Avatar Presets Click
+    if (avatarPresetsGrid) {
+      avatarPresetsGrid.querySelectorAll('.preset-avatar-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const emoji = btn.getAttribute('data-preset');
+          localStorage.setItem('kenzie_profile_photo', emoji);
+          loadProfilePhoto();
+          playBeep(750, 0.08);
+          triggerConfetti();
+          showToast(currentLang === 'en' ? `Avatar ${emoji} selected!` : `Avatar ${emoji} terpilih!`);
+        });
+      });
+    }
+
+    // Reset Avatar
+    if (btnResetAvatar) {
+      btnResetAvatar.addEventListener('click', () => {
+        localStorage.removeItem('kenzie_profile_photo');
+        loadProfilePhoto();
+        playBeep(400, 0.08);
+        showToast(currentLang === 'en' ? 'Reset to KW initials' : 'Kembali ke inisial KW');
+      });
+    }
+
+    loadProfilePhoto();
+
+    /* =========================================
+       3. BILINGUAL LANGUAGE SYSTEM (ID / EN)
+       ========================================= */
+    let currentLang = localStorage.getItem('kenzie_lang') || 'id';
+
+    const i18n = {
+      id: {
+        langFlag: '🇬🇧',
+        langLabel: 'EN',
+        brandSub: 'Productivity Hub ✨',
+        streak: '5 Hari Rutin',
+        tasksLeft: 'Tugas Sisa',
+        greetingMorning: 'Semangat Pagi, Kenzie Wu! ✨',
+        greetingAfternoon: 'Selamat Siang, Kenzie Wu! ☀️',
+        greetingEvening: 'Selamat Sore, Kenzie Wu! 🌅',
+        greetingNight: 'Selamat Malam, Kenzie Wu! 🌙',
+        progressTitle: 'Progres Tugas Hari Ini',
+        completedOf: (done, total) => `${done} dari ${total} tugas selesai`,
+        doneUnit: 'Selesai',
+        addTask: 'Tambah Tugas',
+        taskPlaceholder: 'Tulis rencana atau tugas baru...',
+        catKerja: '💼 Kerja',
+        catBelajar: '📚 Belajar',
+        catPribadi: '🧘 Pribadi',
+        catMendesak: '⚡ Mendesak',
+        filterAll: 'Semua',
+        filterActive: 'Aktif',
+        filterCompleted: 'Selesai',
+        emptyTasksTitle: 'Tidak ada tugas ditemukan',
+        emptyTasksDesc: 'Tambahkan rencana baru di atas untuk mulai produktif!',
+        focus25: 'Fokus Belajar 25 Menit',
+        break5: 'Istirahat Santai 5 Menit',
+        statusFocus: 'Fokus Belajar',
+        statusBreak: 'Istirahat Santai',
+        cycleFocus: 'Fokus Mendalam 25 Menit',
+        cycleBreak: 'Peregangan & Minum Air 5 Menit',
+        btnStart: 'Mulai',
+        btnPause: 'Jeda',
+        btnReset: 'Atur Ulang',
+        btnSkip: 'Lewati',
+        ambientName: 'Derau Relaksasi Alami',
+        ambientDesc: 'Audio sintetis fokus tanpa jeda',
+        statSessions: 'Sesi Selesai',
+        statMins: 'Menit Terfokus',
+        journalCardTitle: 'Catatan Refleksi Belajar',
+        journalDateLabel: '📅 Tanggal Belajar',
+        journalSubjectLabel: '📚 Mata Pelajaran',
+        journalSubjectPlaceholder: 'Pilih Mapel...',
+        journalMoodSection: 'Tingkat Pemahaman Materi',
+        moodPenuh: 'Paham Penuh',
+        moodCukup: 'Cukup Paham',
+        moodLatihan: 'Butuh Latihan',
+        moodBingung: 'Masih Bingung',
+        journalNotesLabel: '📝 Catatan Refleksi & Pemahaman Materi',
+        journalPlaceholder: 'Tuliskan ringkasan pemahamanmu, rumus atau konsep penting yang dipelajari, serta bagian yang perlu diulang kembali...',
+        btnSubmitJournal: 'Simpan Catatan Refleksi',
+        journalStudentHistory: 'Riwayat Refleksi Siswa',
+        emptyJournalTitle: 'Belum ada catatan refleksi',
+        emptyJournalDesc: 'Tuliskan evaluasi pemahaman materimu setelah belajar di formulir atas!',
+        navTasks: 'Tugas',
+        navFocus: 'Fokus',
+        navJournal: 'Jurnal',
+        modalReflectionTitle: 'Sesi Fokus Tuntas!',
+        modalReflectionSubtitle: 'Kerja luar biasa! Kamu baru saja menyelesaikan 25 menit sesi fokus belajar dengan konsentrasi penuh.',
+        modalReflectionTip: 'Mencatat refleksi singkat membantu mengingat materi belajar 50% lebih kuat & tahan lama!',
+        btnModalJournal: 'Tulis Evaluasi di Jurnal 📝',
+        btnModalBreak: 'Mulai Istirahat Santai 5 Menit ☕',
+        profileModalTitle: 'Foto Profil Kenzie Wu',
+        profileModalDesc: 'Pilih foto profil dari perangkatmu atau gunakan avatar siap pakai!',
+        uploadBtnText: 'Unggah Foto Sendiri',
+        presetsTitle: 'Atau Pilih Avatar Keren:',
+        resetAvatarText: 'Hapus Foto & Gunakan Inisial KW',
+        btnSaveClose: 'Simpan & Tutup ✅'
+      },
+      en: {
+        langFlag: '🇮🇩',
+        langLabel: 'ID',
+        brandSub: 'Productivity Hub ✨',
+        streak: '5 Days Streak',
+        tasksLeft: 'Tasks Left',
+        greetingMorning: 'Good Morning, Kenzie Wu! ✨',
+        greetingAfternoon: 'Good Afternoon, Kenzie Wu! ☀️',
+        greetingEvening: 'Good Evening, Kenzie Wu! 🌅',
+        greetingNight: 'Good Night, Kenzie Wu! 🌙',
+        progressTitle: "Today's Task Progress",
+        completedOf: (done, total) => `${done} of ${total} tasks completed`,
+        doneUnit: 'Done',
+        addTask: 'Add Task',
+        taskPlaceholder: 'Write a new task or goal...',
+        catKerja: '💼 Work',
+        catBelajar: '📚 Study',
+        catPribadi: '🧘 Personal',
+        catMendesak: '⚡ Urgent',
+        filterAll: 'All',
+        filterActive: 'Active',
+        filterCompleted: 'Completed',
+        emptyTasksTitle: 'No tasks found',
+        emptyTasksDesc: 'Add a new task above to start being productive!',
+        focus25: 'Study Focus 25 Mins',
+        break5: 'Relaxing Break 5 Mins',
+        statusFocus: 'Deep Focus',
+        statusBreak: 'Relaxing Break',
+        cycleFocus: 'Deep Focus 25 Minutes',
+        cycleBreak: 'Stretch & Drink Water 5 Minutes',
+        btnStart: 'Start',
+        btnPause: 'Pause',
+        btnReset: 'Reset',
+        btnSkip: 'Skip',
+        ambientName: 'Natural Relaxing Noise',
+        ambientDesc: 'Seamless synthetic focus audio',
+        statSessions: 'Sessions Done',
+        statMins: 'Focus Minutes',
+        journalCardTitle: 'Learning Reflection Notes',
+        journalDateLabel: '📅 Study Date',
+        journalSubjectLabel: '📚 Subject',
+        journalSubjectPlaceholder: 'Select Subject...',
+        journalMoodSection: 'Comprehension Level',
+        moodPenuh: 'Mastered',
+        moodCukup: 'Understood',
+        moodLatihan: 'Need Practice',
+        moodBingung: 'Still Confused',
+        journalNotesLabel: '📝 Study Reflections & Key Concepts',
+        journalPlaceholder: 'Write summaries of what you learned, formulas or key concepts, and areas to review...',
+        btnSubmitJournal: 'Save Learning Reflection',
+        journalStudentHistory: 'Student Reflection History',
+        emptyJournalTitle: 'No reflection logs yet',
+        emptyJournalDesc: 'Write your learning reflection above to retain knowledge longer!',
+        navTasks: 'Tasks',
+        navFocus: 'Focus',
+        navJournal: 'Journal',
+        modalReflectionTitle: 'Focus Session Finished!',
+        modalReflectionSubtitle: 'Awesome job! You just completed 25 minutes of deep focus with pure concentration.',
+        modalReflectionTip: 'Writing short reflection helps retain concepts 50% better and longer!',
+        btnModalJournal: 'Write Reflection in Journal 📝',
+        btnModalBreak: 'Take 5-Minute Break ☕',
+        profileModalTitle: "Kenzie Wu's Profile Photo",
+        profileModalDesc: 'Upload a profile photo from your device or pick a stylish avatar!',
+        uploadBtnText: 'Upload Own Photo',
+        presetsTitle: 'Or Pick a Cool Avatar:',
+        resetAvatarText: 'Remove Photo & Use KW Initials',
+        btnSaveClose: 'Save & Close ✅'
+      }
+    };
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('kenzie_lang', lang);
+      const dict = i18n[lang];
+
+      // Header language button
+      const langFlagIcon = document.getElementById('langFlagIcon');
+      const langLabelText = document.getElementById('langLabelText');
+      if (langFlagIcon) langFlagIcon.textContent = dict.langFlag;
+      if (langLabelText) langLabelText.textContent = dict.langLabel;
+
+      // Header elements
+      const brandSubText = document.getElementById('brandSubText');
+      if (brandSubText) brandSubText.textContent = dict.brandSub;
+
+      const streakBadgeText = document.getElementById('streakBadgeText');
+      if (streakBadgeText) streakBadgeText.textContent = dict.streak;
+
+      const tasksRemainingLabel = document.querySelector('.quick-stat-label');
+      if (tasksRemainingLabel) tasksRemainingLabel.textContent = dict.tasksLeft;
+
+      // Progress Card
+      const progressSummaryTitle = document.getElementById('progressSummaryTitle');
+      if (progressSummaryTitle) progressSummaryTitle.textContent = dict.progressTitle;
+
+      const circleStatUnit = document.querySelector('.circle-stat-unit');
+      if (circleStatUnit) circleStatUnit.textContent = dict.doneUnit;
+
+      // Add task card
+      const taskInputEl = document.getElementById('taskInput');
+      if (taskInputEl) taskInputEl.placeholder = dict.taskPlaceholder;
+
+      // Category Chips
+      const chips = document.querySelectorAll('#categoryChips .tag-chip');
+      if (chips.length >= 4) {
+        chips[0].textContent = dict.catKerja;
+        chips[1].textContent = dict.catBelajar;
+        chips[2].textContent = dict.catPribadi;
+        chips[3].textContent = dict.catMendesak;
+      }
+
+      // Filter chips
+      const countAll = document.getElementById('countAll')?.textContent || '0';
+      const countActive = document.getElementById('countActive')?.textContent || '0';
+      const countCompleted = document.getElementById('countCompleted')?.textContent || '0';
+      const filterBtns = document.querySelectorAll('.filter-tabs .filter-btn');
+      if (filterBtns.length >= 3) {
+        filterBtns[0].innerHTML = `${dict.filterAll} (<span id="countAll">${countAll}</span>)`;
+        filterBtns[1].innerHTML = `${dict.filterActive} (<span id="countActive">${countActive}</span>)`;
+        filterBtns[2].innerHTML = `${dict.filterCompleted} (<span id="countCompleted">${countCompleted}</span>)`;
+      }
+
+      // Empty Tasks State
+      const emptyTasksStateTitle = document.querySelector('#emptyTasksState .empty-title');
+      const emptyTasksStateDesc = document.querySelector('#emptyTasksState .empty-desc');
+      if (emptyTasksStateTitle) emptyTasksStateTitle.textContent = dict.emptyTasksTitle;
+      if (emptyTasksStateDesc) emptyTasksStateDesc.textContent = dict.emptyTasksDesc;
+
+      // Focus tab mode buttons
+      const modeFocus25 = document.getElementById('modeFocus25');
+      if (modeFocus25) modeFocus25.querySelector('span:last-child').textContent = dict.focus25;
+      const modeBreak5 = document.getElementById('modeBreak5');
+      if (modeBreak5) modeBreak5.querySelector('span:last-child').textContent = dict.break5;
+
+      if (currentMode === 'pomodoro') {
+        if (timerStatusBadge) timerStatusBadge.textContent = dict.statusFocus;
+        if (timerCycleLabel) timerCycleLabel.textContent = dict.cycleFocus;
+      } else {
+        if (timerStatusBadge) timerStatusBadge.textContent = dict.statusBreak;
+        if (timerCycleLabel) timerCycleLabel.textContent = dict.cycleBreak;
+      }
+
+      // Focus Ambient & Stats
+      const ambientName = document.querySelector('.ambient-name');
+      const ambientDesc = document.querySelector('.ambient-desc');
+      if (ambientName) ambientName.textContent = dict.ambientName;
+      if (ambientDesc) ambientDesc.textContent = dict.ambientDesc;
+
+      const statLabels = document.querySelectorAll('.stat-mini-label');
+      if (statLabels.length >= 2) {
+        statLabels[0].textContent = dict.statSessions;
+        statLabels[1].textContent = dict.statMins;
+      }
+
+      // Journal Tab
+      const journalDateLabel = document.querySelector('label[for="journalDateInput"]');
+      if (journalDateLabel) journalDateLabel.textContent = dict.journalDateLabel;
+
+      const journalSubjectLabel = document.querySelector('label[for="journalSubjectSelect"]');
+      if (journalSubjectLabel) journalSubjectLabel.textContent = dict.journalSubjectLabel;
+
+      const journalSubjectFirstOpt = document.querySelector('#journalSubjectSelect option:first-child');
+      if (journalSubjectFirstOpt) journalSubjectFirstOpt.textContent = dict.journalSubjectPlaceholder;
+
+      const moodSectionLabel = document.querySelector('.mood-selector-wrap .section-label');
+      if (moodSectionLabel) moodSectionLabel.textContent = dict.journalMoodSection;
+
+      const moodTexts = document.querySelectorAll('#moodButtonsGroup .mood-text');
+      if (moodTexts.length >= 4) {
+        moodTexts[0].textContent = dict.moodPenuh;
+        moodTexts[1].textContent = dict.moodCukup;
+        moodTexts[2].textContent = dict.moodLatihan;
+        moodTexts[3].textContent = dict.moodBingung;
+      }
+
+      const journalNotesLabel = document.querySelector('label[for="journalNotesInput"]');
+      if (journalNotesLabel) journalNotesLabel.textContent = dict.journalNotesLabel;
+
+      const journalNotesInput = document.getElementById('journalNotesInput');
+      if (journalNotesInput) journalNotesInput.placeholder = dict.journalPlaceholder;
+
+      const btnSubmitJournal = document.getElementById('btnSubmitJournal');
+      if (btnSubmitJournal) {
+        btnSubmitJournal.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          ${dict.btnSubmitJournal}
+        `;
+      }
+
+      const journalHistoryTitle = document.querySelector('#tab-jurnal div[style*="justify-content: space-between"] span:first-child');
+      if (journalHistoryTitle) journalHistoryTitle.textContent = dict.journalStudentHistory;
+
+      // Bottom Navigation labels
+      const navLabelTugas = document.querySelector('#navBtnTugas .nav-label');
+      const navLabelFokus = document.querySelector('#navBtnFokus .nav-label');
+      const navLabelJurnal = document.querySelector('#navBtnJurnal .nav-label');
+      if (navLabelTugas) navLabelTugas.textContent = dict.navTasks;
+      if (navLabelFokus) navLabelFokus.textContent = dict.navFocus;
+      if (navLabelJurnal) navLabelJurnal.textContent = dict.navJournal;
+
+      // Reflection Modal
+      const modalReflectionTitle = document.getElementById('modalReflectionTitle');
+      const modalReflectionSubtitle = document.querySelector('.reflection-subtitle');
+      const modalReflectionTip = document.querySelector('.highlight-text');
+      const btnGoToJournal = document.getElementById('btnGoToJournal');
+      const btnStartBreakAfterFocus = document.getElementById('btnStartBreakAfterFocus');
+      if (modalReflectionTitle) modalReflectionTitle.textContent = dict.modalReflectionTitle;
+      if (modalReflectionSubtitle) modalReflectionSubtitle.textContent = dict.modalReflectionSubtitle;
+      if (modalReflectionTip) modalReflectionTip.textContent = dict.modalReflectionTip;
+      if (btnGoToJournal) {
+        btnGoToJournal.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          ${dict.btnModalJournal}
+        `;
+      }
+      if (btnStartBreakAfterFocus) btnStartBreakAfterFocus.textContent = dict.btnModalBreak;
+
+      // Profile Modal
+      const profileModalTitle = document.getElementById('profileModalTitle');
+      const profileModalDesc = document.getElementById('profileModalDesc');
+      const uploadPhotoBtnText = document.getElementById('uploadPhotoBtnText');
+      const presetsTitleText = document.getElementById('presetsTitleText');
+      const resetAvatarText = document.getElementById('resetAvatarText');
+      const btnCloseProfileModal = document.getElementById('btnCloseProfileModal');
+      if (profileModalTitle) profileModalTitle.textContent = dict.profileModalTitle;
+      if (profileModalDesc) profileModalDesc.textContent = dict.profileModalDesc;
+      if (uploadPhotoBtnText) uploadPhotoBtnText.textContent = dict.uploadBtnText;
+      if (presetsTitleText) presetsTitleText.textContent = dict.presetsTitle;
+      if (resetAvatarText) resetAvatarText.textContent = dict.resetAvatarText;
+      if (btnCloseProfileModal) btnCloseProfileModal.textContent = dict.btnSaveClose;
+
+      // Update date and greeting text in corresponding language
+      updateDateAndGreeting();
+      renderTasks();
+      renderJournals();
+    }
+
+    const btnToggleLanguage = document.getElementById('btnToggleLanguage');
+    if (btnToggleLanguage) {
+      btnToggleLanguage.addEventListener('click', () => {
+        const nextLang = currentLang === 'id' ? 'en' : 'id';
+        playBeep(850, 0.06);
+        applyLanguage(nextLang);
+        showToast(nextLang === 'en' ? 'Switched to English 🇬🇧' : 'Beralih ke Bahasa Indonesia 🇮🇩');
+      });
+    }
+
+    /* =========================================
+       4. REAL-TIME DATE & GREETING
+       ========================================= */
+    function updateDateAndGreeting() {
+      const now = new Date();
+      const locale = currentLang === 'en' ? 'en-US' : 'id-ID';
+      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      const dateString = now.toLocaleDateString(locale, options);
+      const dateEl = document.getElementById('currentDateText');
+      if (dateEl) dateEl.textContent = dateString;
+
+      const hour = now.getHours();
+      const dict = i18n[currentLang] || i18n.id;
+      let greeting = dict.greetingMorning;
+      if (hour >= 11 && hour < 15) greeting = dict.greetingAfternoon;
+      else if (hour >= 15 && hour < 18) greeting = dict.greetingEvening;
+      else if (hour >= 18 || hour < 4) greeting = dict.greetingNight;
+
+      const greetingEl = document.getElementById('greetingTitle');
+      if (greetingEl) greetingEl.textContent = greeting;
+    }
+
+    /* =========================================
+       3. SISTEM PERGANTIAN TAB INSTAN & MULUS
+       ========================================= */
+    const navItems = document.querySelectorAll('.nav-item');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    function switchToTab(targetId) {
+      if (!targetId) return;
+
+      // Update nav active classes
+      navItems.forEach(nav => {
+        if (nav.getAttribute('data-target') === targetId) {
+          nav.classList.add('active');
+        } else {
+          nav.classList.remove('active');
+        }
+      });
+
+      // Switch visible tab panel
+      tabContents.forEach(tab => {
+        if (tab.id === targetId) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+
+      // Scroll back to top smoothly
+      const mainContainer = document.querySelector('.app-main');
+      if (mainContainer) mainContainer.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const targetId = item.getAttribute('data-target');
+        playBeep(800, 0.04, 'triangle');
+        switchToTab(targetId);
+      });
+    });
+
+    /* =========================================
+       4. TAB 1: LOGIKA MANAJEMEN TUGAS
+       ========================================= */
+    const defaultTasks = [
+      { id: '1', title: 'Selesaikan desain mockup antarmuka mobile', category: 'kerja', completed: true },
+      { id: '2', title: 'Belajar konsep state management di JavaScript', category: 'belajar', completed: false },
+      { id: '3', title: 'Jalan santai sore 30 menit & hidrasi', category: 'pribadi', completed: false },
+      { id: '4', title: 'Evaluasi mingguan & rencana sprint', category: 'mendesak', completed: false }
+    ];
+
+    let tasks = JSON.parse(localStorage.getItem('productivity_hub_tasks')) || defaultTasks;
+    let currentTaskFilter = 'all';
+    let selectedCategory = 'kerja';
+
+    const taskListContainer = document.getElementById('taskListContainer');
+    const emptyTasksState = document.getElementById('emptyTasksState');
+    const addTaskForm = document.getElementById('addTaskForm');
+    const taskInput = document.getElementById('taskInput');
+    const categoryChips = document.querySelectorAll('#categoryChips .tag-chip');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    // Category Selector in Form
+    categoryChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        categoryChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        selectedCategory = chip.getAttribute('data-category');
+      });
+    });
+
+    // Filter Buttons
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTaskFilter = btn.getAttribute('data-filter');
+        renderTasks();
+      });
+    });
+
+    function saveTasks() {
+      localStorage.setItem('productivity_hub_tasks', JSON.stringify(tasks));
+      renderTasks();
+    }
+
+    function renderTasks() {
+      // Filter logic
+      const filteredTasks = tasks.filter(task => {
+        if (currentTaskFilter === 'active') return !task.completed;
+        if (currentTaskFilter === 'completed') return task.completed;
+        return true;
+      });
+
+      // Update counters
+      const totalCount = tasks.length;
+      const completedCount = tasks.filter(t => t.completed).length;
+      const activeCount = totalCount - completedCount;
+
+      document.getElementById('countAll').textContent = totalCount;
+      document.getElementById('countActive').textContent = activeCount;
+      document.getElementById('countCompleted').textContent = completedCount;
+      document.getElementById('tasksRemainingBadge').textContent = activeCount;
+
+      // Progress bar & circle
+      const percent = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
+      document.getElementById('taskProgressBar').style.width = `${percent}%`;
+      document.getElementById('progressPercentText').textContent = `${percent}%`;
+      document.getElementById('progressDetailText').textContent = `${completedCount} dari ${totalCount} tugas selesai`;
+
+      // Clear container
+      taskListContainer.innerHTML = '';
+
+      if (filteredTasks.length === 0) {
+        emptyTasksState.style.display = 'block';
+      } else {
+        emptyTasksState.style.display = 'none';
+
+        filteredTasks.forEach(task => {
+          const item = document.createElement('div');
+          item.className = `task-item ${task.completed ? 'completed' : ''}`;
+          item.setAttribute('data-id', task.id);
+
+          const categoryPillClass = `pill-${task.category}`;
+          const categoryName = {
+            kerja: 'Kerja',
+            belajar: 'Belajar',
+            pribadi: 'Pribadi',
+            mendesak: 'Mendesak'
+          }[task.category] || 'Umum';
+
+          item.innerHTML = `
+            <label class="task-checkbox-wrapper" title="${task.completed ? 'Tandai belum selesai' : 'Tandai selesai'}">
+              <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
+              <div class="custom-check">
+                <svg viewBox="0 0 24 24">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+            </label>
+            <div class="task-details">
+              <div class="task-text">${escapeHtml(task.title)}</div>
+              <div class="task-meta">
+                <span class="task-pill ${categoryPillClass}">${categoryName}</span>
+              </div>
+            </div>
+            <button type="button" class="btn-delete-task" title="Hapus Tugas">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          `;
+
+          // Event Toggle Checkbox
+          const checkbox = item.querySelector('.task-checkbox');
+          checkbox.addEventListener('change', () => {
+            task.completed = checkbox.checked;
+            if (task.completed) {
+              playSuccessChime();
+              triggerConfetti();
+              showToast('Tugas diselesaikan! Kerja bagus! 🎉');
+            } else {
+              playBeep(450, 0.08);
+            }
+            saveTasks();
+          });
+
+          // Event Delete Task
+          const deleteBtn = item.querySelector('.btn-delete-task');
+          deleteBtn.addEventListener('click', () => {
+            tasks = tasks.filter(t => t.id !== task.id);
+            playBeep(320, 0.08);
+            showToast('Tugas telah dihapus');
+            saveTasks();
+          });
+
+          taskListContainer.appendChild(item);
+        });
+      }
+    }
+
+    // Add New Task Submit
+    addTaskForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = taskInput.value.trim();
+      if (!title) return;
+
+      const newTask = {
+        id: Date.now().toString(),
+        title: title,
+        category: selectedCategory,
+        completed: false
+      };
+
+      tasks.unshift(newTask);
+      taskInput.value = '';
+      playBeep(650, 0.1);
+      showToast('Tugas berhasil ditambahkan! 🚀');
+      saveTasks();
+    });
+
+    renderTasks();
+
+    /* =========================================
+       5. TAB 2: TIMER FOKUS (POMODORO) & ALARM NATIVE
+       ========================================= */
+    const timerModesBtns = document.querySelectorAll('#timerModes .mode-btn');
+    const timerClockDisplay = document.getElementById('timerClockDisplay');
+    const timerStatusBadge = document.getElementById('timerStatusBadge');
+    const timerCycleLabel = document.getElementById('timerCycleLabel');
+    const timerProgressCircle = document.getElementById('timerProgressCircle');
+    const btnToggleTimer = document.getElementById('btnToggleTimer');
+    const toggleButtonLabel = document.getElementById('toggleButtonLabel');
+    const playPauseIcon = document.getElementById('playPauseIcon');
+    const btnResetTimer = document.getElementById('btnResetTimer');
+    const btnSkipTimer = document.getElementById('btnSkipTimer');
+    const ambientToggle = document.getElementById('ambientToggle');
+    const sessionsCompletedEl = document.getElementById('sessionsCompletedCount');
+    const totalFocusMinutesEl = document.getElementById('totalFocusMinutes');
+
+    // Reflection Modal Elements
+    const reflectionModal = document.getElementById('reflectionModal');
+    const btnGoToJournal = document.getElementById('btnGoToJournal');
+    const btnStartBreakAfterFocus = document.getElementById('btnStartBreakAfterFocus');
+
+    const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 95; // r=95 => ~596.90
+    timerProgressCircle.style.strokeDasharray = `${CIRCLE_CIRCUMFERENCE}`;
+
+    let timerInterval = null;
+    let isRunning = false;
+    let totalDurationSeconds = 25 * 60;
+    let remainingSeconds = totalDurationSeconds;
+    let currentMode = 'pomodoro'; // 'pomodoro' | 'shortBreak'
+
+    let sessionsCompleted = parseInt(localStorage.getItem('productivity_sessions_completed') || '4', 10);
+    let totalFocusMins = parseInt(localStorage.getItem('productivity_focus_minutes') || '100', 10);
+
+    sessionsCompletedEl.textContent = sessionsCompleted;
+    totalFocusMinutesEl.textContent = totalFocusMins;
+
+    // Web Audio API Native Alarm Beep Sequence
+    function playNativeAlarmBeep() {
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+
+        // Rangkaian melodi nada alarm beep harmonis (C5, E5, G5, C6)
+        const chimeNotes = [
+          { time: 0.0, freq: 659.25, dur: 0.16, type: 'triangle' }, // E5
+          { time: 0.18, freq: 783.99, dur: 0.16, type: 'triangle' }, // G5
+          { time: 0.36, freq: 1046.5, dur: 0.3, type: 'sine' },      // C6
+          
+          { time: 0.8, freq: 659.25, dur: 0.16, type: 'triangle' },
+          { time: 0.98, freq: 783.99, dur: 0.16, type: 'triangle' },
+          { time: 1.16, freq: 1046.5, dur: 0.45, type: 'sine' }
+        ];
+
+        chimeNotes.forEach(note => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = note.type;
+          osc.frequency.setValueAtTime(note.freq, now + note.time);
+
+          gain.gain.setValueAtTime(0.001, now + note.time);
+          gain.gain.linearRampToValueAtTime(0.28, now + note.time + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + note.time + note.dur);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + note.time);
+          osc.stop(now + note.time + note.dur);
+        });
+      } catch (e) {
+        console.warn('Native alarm Web Audio API blocked or not supported');
+      }
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function updateTimerUI() {
+      timerClockDisplay.textContent = formatTime(remainingSeconds);
+
+      const fraction = remainingSeconds / totalDurationSeconds;
+      const offset = CIRCLE_CIRCUMFERENCE * (1 - fraction);
+      timerProgressCircle.style.strokeDashoffset = offset;
+    }
+
+    function setTimerMode(mode, minutes) {
+      pauseTimer();
+      currentMode = mode;
+      totalDurationSeconds = minutes * 60;
+      remainingSeconds = totalDurationSeconds;
+
+      timerModesBtns.forEach(btn => {
+        if (btn.getAttribute('data-mode') === mode) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      if (mode === 'pomodoro') {
+        timerStatusBadge.textContent = 'Fokus Belajar';
+        timerCycleLabel.textContent = 'Fokus Mendalam 25 Menit';
+      } else {
+        timerStatusBadge.textContent = 'Istirahat Santai';
+        timerCycleLabel.textContent = 'Peregangan & Minum Air 5 Menit';
+      }
+
+      updateTimerUI();
+    }
+
+    timerModesBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const time = parseInt(btn.getAttribute('data-time'), 10);
+        const mode = btn.getAttribute('data-mode');
+        playBeep(650, 0.06);
+        setTimerMode(mode, time);
+      });
+    });
+
+    function toggleTimer() {
+      if (isRunning) {
+        pauseTimer();
+      } else {
+        startTimer();
+      }
+    }
+
+    function startTimer() {
+      if (isRunning) return;
+      isRunning = true;
+      getAudioContext(); // Resume context if user touched
+
+      btnToggleTimer.classList.add('running');
+      if (toggleButtonLabel) toggleButtonLabel.textContent = 'Jeda';
+
+      // Switch icon to Pause
+      playPauseIcon.innerHTML = `
+        <rect x="6" y="4" width="4" height="16" rx="1.5"></rect>
+        <rect x="14" y="4" width="4" height="16" rx="1.5"></rect>
+      `;
+
+      timerInterval = setInterval(() => {
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
+          updateTimerUI();
+        } else {
+          handleTimerCompleted();
+        }
+      }, 1000);
+
+      playBeep(700, 0.08);
+      showToast(currentMode === 'pomodoro' ? 'Sesi belajar dimulai! Selamat fokus! 🎯' : 'Waktu istirahat santai dimulai! ☕');
+    }
+
+    function pauseTimer() {
+      if (!isRunning) return;
+      isRunning = false;
+      clearInterval(timerInterval);
+      timerInterval = null;
+
+      btnToggleTimer.classList.remove('running');
+      if (toggleButtonLabel) toggleButtonLabel.textContent = 'Mulai';
+
+      // Switch icon to Play
+      playPauseIcon.innerHTML = `<polygon points="6 4 18 12 6 20 6 4"></polygon>`;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      remainingSeconds = totalDurationSeconds;
+      updateTimerUI();
+      playBeep(420, 0.08);
+      showToast('Timer diatur ulang');
+    }
+
+    function handleTimerCompleted() {
+      pauseTimer();
+      
+      // Bunyikan Alarm Audio Native Web Audio API
+      playNativeAlarmBeep();
+
+      if (currentMode === 'pomodoro') {
+        sessionsCompleted++;
+        totalFocusMins += Math.round(totalDurationSeconds / 60);
+        localStorage.setItem('productivity_sessions_completed', sessionsCompleted);
+        localStorage.setItem('productivity_focus_minutes', totalFocusMins);
+        sessionsCompletedEl.textContent = sessionsCompleted;
+        totalFocusMinutesEl.textContent = totalFocusMins;
+
+        // Buka Popup Ajakan Refleksi Ramah Siswa
+        showReflectionPopup();
+      } else {
+        showToast('🔔 Istirahat selesai! Siap mulai belajar lagi?');
+        setTimerMode('pomodoro', 25);
+      }
+    }
+
+    function showReflectionPopup() {
+      if (reflectionModal) {
+        reflectionModal.classList.add('active');
+        triggerConfetti();
+      }
+    }
+
+    function hideReflectionPopup() {
+      if (reflectionModal) {
+        reflectionModal.classList.remove('active');
+      }
+    }
+
+    // Modal Actions
+    if (btnGoToJournal) {
+      btnGoToJournal.addEventListener('click', () => {
+        hideReflectionPopup();
+        playBeep(750, 0.08);
+        
+        // Pindah ke Tab Jurnal
+        switchToTab('tab-jurnal');
+
+        // Otomatis siapkan form jurnal untuk evaluasi belajar
+        setTimeout(() => {
+          const dateInput = document.getElementById('journalDateInput');
+          const subjectSelect = document.getElementById('journalSubjectSelect');
+          const notesInput = document.getElementById('journalNotesInput');
+          
+          if (dateInput && !dateInput.value) {
+            dateInput.value = new Date().toISOString().split('T')[0];
+          }
+          if (subjectSelect && !subjectSelect.value) {
+            subjectSelect.value = 'matematika';
+          }
+          if (notesInput) {
+            notesInput.focus();
+          }
+          showToast('Silakan catat pemahaman materi belajarmu! 📝');
+        }, 150);
+      });
+    }
+
+    if (btnStartBreakAfterFocus) {
+      btnStartBreakAfterFocus.addEventListener('click', () => {
+        hideReflectionPopup();
+        playBeep(600, 0.06);
+        setTimerMode('shortBreak', 5);
+        showToast('Nikmati istirahat santai 5 menit! ☕');
+      });
+    }
+
+    // Close modal on click outside
+    if (reflectionModal) {
+      reflectionModal.addEventListener('click', (e) => {
+        if (e.target === reflectionModal) {
+          hideReflectionPopup();
+        }
+      });
+    }
+
+    btnToggleTimer.addEventListener('click', toggleTimer);
+    btnResetTimer.addEventListener('click', resetTimer);
+    btnSkipTimer.addEventListener('click', () => {
+      playBeep(500, 0.08);
+      handleTimerCompleted();
+    });
+
+    updateTimerUI();
+
+    /* Synthesized Ambient White Noise Generator (Web Audio API) */
+    let noiseNode = null;
+    let noiseFilter = null;
+    let noiseGain = null;
+
+    function startAmbientNoise() {
+      try {
+        const ctx = getAudioContext();
+        const bufferSize = ctx.sampleRate * 2;
+        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          output[i] = Math.random() * 2 - 1;
+        }
+
+        noiseNode = ctx.createBufferSource();
+        noiseNode.buffer = noiseBuffer;
+        noiseNode.loop = true;
+
+        // Pink/soft low-pass filter to sound like gentle rain/wind
+        noiseFilter = ctx.createBiquadFilter();
+        noiseFilter.type = 'lowpass';
+        noiseFilter.frequency.setValueAtTime(450, ctx.currentTime);
+
+        noiseGain = ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.06, ctx.currentTime);
+
+        noiseNode.connect(noiseFilter);
+        noiseFilter.connect(noiseGain);
+        noiseGain.connect(ctx.destination);
+
+        noiseNode.start();
+        showToast('Audio relaksasi aktif 🌧️');
+      } catch (e) {
+        console.error('Ambient sound setup error:', e);
+      }
+    }
+
+    function stopAmbientNoise() {
+      if (noiseNode) {
+        try {
+          noiseNode.stop();
+          noiseNode.disconnect();
+          noiseNode = null;
+        } catch (e) { }
+      }
+    }
+
+    ambientToggle.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        startAmbientNoise();
+      } else {
+        stopAmbientNoise();
+      }
+    });
+
+    /* =========================================
+       6. TAB 3: JURNAL & REFLEKSI HARIAN BELAJAR
+       ========================================= */
+    const defaultJournals = [
+      {
+        id: '1',
+        date: '2026-09-29',
+        displayDate: '29 Sep 2026',
+        subject: 'matematika',
+        subjectName: 'Matematika',
+        notes: 'Memahami konsep turunan fungsi aljabar dan rumus dasar diferensial. Perlu latihan soal cerita aplikasi maksimum dan minimum.',
+        understanding: 'Paham Penuh',
+        emoji: '🤩',
+        timestamp: Date.now()
+      },
+      {
+        id: '2',
+        date: '2026-09-28',
+        displayDate: '28 Sep 2026',
+        subject: 'fisika',
+        subjectName: 'Fisika',
+        notes: 'Mempelajari Hukum Termodinamika II dan efisiensi mesin Carnot. Sudah paham siklus dasar, besok lanjut latihan grafik P-V.',
+        understanding: 'Cukup Paham',
+        emoji: '😊',
+        timestamp: Date.now() - 86400000
+      }
+    ];
+
+    let journals = JSON.parse(localStorage.getItem('productivity_hub_journals')) || defaultJournals;
+    let selectedUnderstanding = 'Paham Penuh';
+    let selectedEmoji = '🤩';
+
+    const journalForm = document.getElementById('journalForm');
+    const journalDateInput = document.getElementById('journalDateInput');
+    const journalSubjectSelect = document.getElementById('journalSubjectSelect');
+    const journalNotesInput = document.getElementById('journalNotesInput');
+    const journalListContainer = document.getElementById('journalListContainer');
+    const emptyJournalState = document.getElementById('emptyJournalState');
+    const journalCountBadge = document.getElementById('journalCountBadge');
+    const moodButtons = document.querySelectorAll('#moodButtonsGroup .mood-btn');
+
+    // Inisialisasi Tanggal Hari Ini Secara Otomatis (Format YYYY-MM-DD)
+    function initJournalDate() {
+      if (journalDateInput) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        journalDateInput.value = `${yyyy}-${mm}-${dd}`;
+      }
+    }
+    initJournalDate();
+
+    // Subject Dictionary Helper
+    const subjectMap = {
+      matematika: { name: 'Matematika', icon: '📐' },
+      indonesia: { name: 'B. Indonesia', icon: '📖' },
+      inggris: { name: 'B. Inggris', icon: '🌍' },
+      fisika: { name: 'Fisika', icon: '⚡' },
+      kimia: { name: 'Kimia', icon: '🧪' },
+      biologi: { name: 'Biologi', icon: '🧬' },
+      sejarah: { name: 'Sejarah & IPS', icon: '🏛️' },
+      informatika: { name: 'Informatika', icon: '💻' },
+      lainnya: { name: 'Umum / Lainnya', icon: '📝' }
+    };
+
+    // Pemilih Tingkat Pemahaman
+    moodButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        moodButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedUnderstanding = btn.getAttribute('data-mood') || 'Paham Penuh';
+        selectedEmoji = btn.getAttribute('data-emoji') || '🤩';
+        playBeep(700, 0.05);
+      });
+    });
+
+    // Format Tanggal Indonesia
+    function formatIndonesianDate(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        const d = new Date(parts[0], parts[1] - 1, parts[2]);
+        return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+      }
+      return dateStr;
+    }
+
+    function saveJournals() {
+      localStorage.setItem('productivity_hub_journals', JSON.stringify(journals));
+      renderJournals();
+    }
+
+    function renderJournals() {
+      // Urutkan dari tanggal & waktu paling baru
+      journals.sort((a, b) => {
+        const timeA = a.timestamp || (a.date ? new Date(a.date).getTime() : 0);
+        const timeB = b.timestamp || (b.date ? new Date(b.date).getTime() : 0);
+        return timeB - timeA;
+      });
+
+      journalCountBadge.textContent = `${journals.length} Catatan`;
+      journalListContainer.innerHTML = '';
+
+      if (journals.length === 0) {
+        emptyJournalState.style.display = 'block';
+      } else {
+        emptyJournalState.style.display = 'none';
+
+        journals.forEach(entry => {
+          const card = document.createElement('div');
+          card.className = 'journal-entry-card';
+
+          const subjInfo = subjectMap[entry.subject] || { name: entry.subjectName || 'Mata Pelajaran', icon: '📚' };
+          const subjClass = `subject-${entry.subject || 'lainnya'}`;
+          const formattedDate = entry.displayDate || formatIndonesianDate(entry.date);
+
+          card.innerHTML = `
+            <div class="journal-top">
+              <div class="journal-badge-group">
+                <span class="subject-pill ${subjClass}">
+                  <span>${subjInfo.icon}</span>
+                  <span>${subjInfo.name}</span>
+                </span>
+                <span class="journal-date-text">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  ${escapeHtml(formattedDate)}
+                </span>
+              </div>
+              <button type="button" class="btn-delete-journal" title="Hapus Catatan Refleksi" aria-label="Hapus">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </button>
+            </div>
+
+            <div class="journal-entry-body">${escapeHtml(entry.notes || entry.body || '')}</div>
+
+            <div class="journal-footer">
+              <span class="journal-understanding-tag">
+                <span>${entry.emoji || '✨'}</span>
+                <span>${escapeHtml(entry.understanding || entry.mood || 'Refleksi Belajar')}</span>
+              </span>
+              <span style="font-size: 0.68rem; color: var(--text-subtle);">ID: #${entry.id.slice(-4)}</span>
+            </div>
+          `;
+
+          // Tombol Hapus Catatan
+          const deleteBtn = card.querySelector('.btn-delete-journal');
+          deleteBtn.addEventListener('click', () => {
+            journals = journals.filter(j => j.id !== entry.id);
+            playBeep(320, 0.08);
+            showToast('Catatan refleksi dihapus');
+            saveJournals();
+          });
+
+          journalListContainer.appendChild(card);
+        });
+      }
+    }
+
+    // Submit Catatan Refleksi Baru
+    journalForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const dateVal = journalDateInput.value;
+      const subjectVal = journalSubjectSelect.value;
+      const notesVal = journalNotesInput.value.trim();
+
+      if (!subjectVal) {
+        showToast('Pilih mata pelajaran terlebih dahulu! ⚠️', 'warning');
+        journalSubjectSelect.focus();
+        return;
+      }
+
+      if (!notesVal) {
+        showToast('Tuliskan catatan refleksi materimu! 📝', 'warning');
+        journalNotesInput.focus();
+        return;
+      }
+
+      const subjInfo = subjectMap[subjectVal] || { name: 'Mata Pelajaran', icon: '📚' };
+      const formattedDate = formatIndonesianDate(dateVal);
+
+      const newEntry = {
+        id: Date.now().toString(),
+        date: dateVal,
+        displayDate: formattedDate,
+        subject: subjectVal,
+        subjectName: subjInfo.name,
+        notes: notesVal,
+        understanding: selectedUnderstanding,
+        emoji: selectedEmoji,
+        timestamp: Date.now()
+      };
+
+      // Tambahkan ke paling depan (terbaru di atas)
+      journals.unshift(newEntry);
+      
+      // Reset text input & dropdown
+      journalNotesInput.value = '';
+      journalSubjectSelect.value = '';
+      initJournalDate();
+
+      playSuccessChime();
+      triggerConfetti();
+      showToast('📖 Catatan refleksi belajar berhasil disimpan!');
+      saveJournals();
+    });
+
+    renderJournals();
+    applyLanguage(currentLang);
+
+    /* Helper: Escape HTML string */
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+
+</html>
